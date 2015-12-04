@@ -1,0 +1,111 @@
+
+body{
+	background-color: #000;
+}
+
+.ocultar{
+	display: none;
+}
+
+.character {
+    height: 100px;
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border-radius: 4px;
+    position: relative;
+    margin-top: 10px;
+}
+
+.character .player {
+    position: absolute;
+    top: 10px;
+    line-height: 1em;
+    font-weight: bold;
+    font-size: 18px;
+    z-index: 1;
+}
+
+.imageKart .image img {
+    /*max-height: 100px;*/
+    max-height: 40px;
+}
+
+.character .image img {
+    /*max-height: 100px;*/
+    max-height: 40px;
+}
+
+.character .player {
+    left: 10px;
+}
+
+.character.p1 .player {
+    color: #c5bf18;
+}
+
+.character.p2 .player {
+    color: #2aaecc;
+}
+
+.character.p3 .player {
+    color: #c66a81;
+}
+
+.character.p4 .player {
+    color: #43ac53;
+}
+
+.name, .character .vehicle {
+    line-height: 1.2em;
+    margin: 0;
+}
+
+.character .name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.character .vehicle {
+    font-size: 14px;
+    font-weight: bold;
+    color: #888888;
+}
+
+.caja{
+	border-radius: 4px;
+	border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.players .row {
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.players .row>div {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.character .row {
+    margin-left: -5px;
+    margin-right: -5px;
+    display: table;
+    height: 100%;
+}
+
+.character .row>div {
+  display: table-cell;
+  float: none;
+  vertical-align: middle;
+}
+
+#ajustes{
+	margin-bottom: 10px;
+}
+
+.texto{
+	padding:0;
+}
