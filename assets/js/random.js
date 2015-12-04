@@ -118,16 +118,54 @@ var pistas = [
   {id:32, nombre:'N64 Castillo de Bowse', copa:copas[7]}
 ]
 
-// Pistas de la sesión
+// Variables iniciales
+var modo = null;
 var pistasSesion = [];
+var charactersRandomear = characters;
+var kartsRandomear = karts;
 
 function random(){
-  
+console.log(modo);
+  // Segú el tipo de juego cambiamos los autos y pjs del random
+  switch(modo) {
+    case 'tamano':
+        charactersRandomear = [];
+        tamano = characters[Math.floor((Math.random()*characters.length))].size;
+
+        $.each(characters, function( i, value ) {
+          if ( value.size == tamano ) {
+            charactersRandomear.push(value);
+          }
+        });
+
+        break;
+
+    case 'auto':
+        kartsRandomear = []
+        charactersRandomear = []
+
+        // autos desbloqueados
+        $.each(karts, function( i, value ) {
+          if ( typeof value.unlock == 'undefined' || value.unlock ) {
+            kartsRandomear.push(value);
+          }
+        }); 
+
+        // random de un auto de los desbloqueados
+        kartsRandomear = kartsRandomear[Math.floor((Math.random()*kartsRandomear.length))];
+        
+        // personajes del tamaño del auto
+        $.each(characters, function( i, value ) {
+          if ( value.size == kartsRandomear.size ) {
+            charactersRandomear.push(value);
+          }
+        });
+
+        break;
+  }
+
   var randCharacter = randomPjs();
   var randPistas = randomPistas();
-
-  // console.log(randCharacter);
-  // console.log(randPistas);
 
   // Jugadores
   $('.p1 .image').find('img').attr('src','assets/images/'+randCharacter[0].imagen);
@@ -167,31 +205,29 @@ function random(){
 }
 
 function randomPjs(){
-  
+
   var tempCharacters = [];
   var lote = [];
 
-  for (var i = characters.length - 1; i >= 0; i--) {
-    if ( typeof characters[i].unlock == 'undefined' || characters[i].unlock) {
-      tempCharacters.push(characters[i]);
+  $.each(charactersRandomear, function( i, value ) {
+    if ( typeof value.unlock == 'undefined' || value.unlock ) {
+      tempCharacters.push(value);
     }
-  }
-  
+  });
+
   while(lote.length<4){
-  //for(var i=0; i<4; i++){
     
     var nuevo = tempCharacters[Math.floor((Math.random()*tempCharacters.length))];
 
-    if(lote.indexOf(nuevo)!=-1){
-      i++;
-    } else {
-      if (nuevo.unlock) {
+    if( $.inArray(nuevo, lote)!=-1){
+      //
+    }else{
+      if (typeof nuevo.unlock == 'undefined' || nuevo.unlock) {
         nuevo.kart = randomKart(nuevo.size);
         lote.push(nuevo);
-      }else{
-        i++;
       }
     }
+    
   }
 
   return lote;
@@ -199,19 +235,24 @@ function randomPjs(){
 }
 
 function randomKart(size){
-
+  
   var tempKarts = [];
 
-  for (var i = karts.length - 1; i >= 0; i--) {
-    if ( typeof karts[i].unlock == 'undefined' || karts[i].unlock) {
-      tempKarts.push(karts[i]);
-    } 
+  if(kartsRandomear.length>1){
+
+    $.each(kartsRandomear, function( i, value ) {
+      if ( typeof value.unlock == 'undefined' || value.unlock ) {
+        tempKarts.push(value);
+      }
+    });
+
+    do{
+      var nuevo = tempKarts[Math.floor((Math.random()*tempKarts.length))];
+    }while(nuevo.size!=size)
+
+  }else{
+    nuevo = kartsRandomear
   }
-
-  do{
-    var nuevo = tempKarts[Math.floor((Math.random()*tempKarts.length))];
-  }while(nuevo.size!=size)
-
   return nuevo;
 
 }
@@ -223,7 +264,7 @@ function randomPistas(){
   while(lote.length<4){
     
     pista = pistas[Math.floor((Math.random()*pistas.length))];
-  console.log(pista);  
+     
     if(pistasSesion.indexOf(pista)!=-1){
       console.log("repetido -> "+pista.nombre);
     } else {
@@ -354,9 +395,25 @@ $(function() {
 
   generaAjustes();
 
-  $('#nuevo-juego').click(function(){
-    random();
-    $('.ocultar').show();
+  $('.nuevo-juego').click(function(){
+
+    if(!modo){ // asignamos el modo de juego
+      modo = $(this).data('type'); 
+    }
+    $( '.botonesJuegos' ).hide(); 
+    random( $( this ).data( 'type' ) );
+    $( '.ocultar').show();
+
+  });
+
+  $('#seleccionar-modo').click(function(){
+    // reiniciamos las varaibles
+    modo = null;
+    charactersRandomear = characters;
+    kartsRandomear = karts;
+    $('.botonesJuegos').show();
+    $('.ocultar').hide();
+
   });
   
   $("#guardar").on("click",function(){
